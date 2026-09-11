@@ -2,20 +2,13 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
-const fs = require('fs');
-const path = require('path');
 const { AssemblyAI } = require('assemblyai');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const uploadsDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir);
-}
-
-const upload = multer({ dest: uploadsDir });
+const upload = multer({ storage: multer.memoryStorage() });
 
 const client = new AssemblyAI({
   apiKey: process.env.ASSEMBLYAI_API_KEY
@@ -32,7 +25,7 @@ app.post('/api/transcribe-audio', upload.single('audio'), async (req, res) => {
     }
 
     const transcript = await client.transcripts.transcribe({
-      audio: req.file.path,
+      audio: req.file.buffer,
       speech_models: ['universal-3-5-pro'],
       format_text: true,
       punctuate: true
@@ -45,7 +38,7 @@ app.post('/api/transcribe-audio', upload.single('audio'), async (req, res) => {
     res.json({ text: transcript.text });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Transcription failed' });
+    res.status(500).json({ error: 'Transcription failed', details: err.message });
   }
 });
 
