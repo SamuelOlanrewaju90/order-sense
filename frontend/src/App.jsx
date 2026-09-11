@@ -43,8 +43,7 @@ function App() {
     formData.append('audio', audioBlob, 'order.webm');
 
     try {
-      const res = await fetch('http://localhost:3000/api/transcribe-audio', {
-        method: 'POST',
+      const res = await fetch('https://order-sense-backend.onrender.com/api/transcribe-audio', {        method: 'POST',
         body: formData
       });
       const data = await res.json();
@@ -52,8 +51,7 @@ function App() {
       setTranscript(text);
 
       if (data.text) {
-        const triageRes = await fetch('http://localhost:3000/api/triage', {
-          method: 'POST',
+        const triageRes = await fetch('https://order-sense-backend.onrender.com/api/triage', {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ orderText: data.text })
         });
