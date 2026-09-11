@@ -2,13 +2,20 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
+const fs = require('fs');
+const path = require('path');
 const { AssemblyAI } = require('assemblyai');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const upload = multer({ dest: 'uploads/' });
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir);
+}
+
+const upload = multer({ dest: uploadsDir });
 
 const client = new AssemblyAI({
   apiKey: process.env.ASSEMBLYAI_API_KEY
