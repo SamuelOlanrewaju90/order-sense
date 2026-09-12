@@ -52,6 +52,7 @@ function App() {
 
       if (data.text) {
         const triageRes = await fetch('https://order-sense-backend.onrender.com/api/triage', {
+          method: 'POST'
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ orderText: data.text })
         });
