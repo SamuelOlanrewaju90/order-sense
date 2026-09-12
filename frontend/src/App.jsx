@@ -59,8 +59,7 @@ function App() {
         setTriage(triageData);
       }
     } catch (err) {
-      setTranscript('Error connecting to server');
-    } finally {
+      setTranscript('Error: ' + err.message);    } finally {
       setLoading(false);
     }
   };
